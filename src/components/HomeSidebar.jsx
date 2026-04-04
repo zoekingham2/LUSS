@@ -152,7 +152,7 @@ export default function HomeSidebar({ nextMatch, latestResult, upcomingMatches }
         <div className="border border-border">
           <div className="bg-leeds-navy px-4 py-2">
             <span className="font-archivo text-leeds-gold text-[11px] tracking-[0.12em] uppercase">
-              Kommande Matcher
+              Kommande Matcherna
             </span>
           </div>
           <div className="divide-y divide-border">
