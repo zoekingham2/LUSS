@@ -1,0 +1,18 @@
+{
+  "name": "ForumReply",
+  "type": "object",
+  "properties": {
+    "thread_id": {
+      "type": "string",
+      "title": "Tr\u00e5d-ID"
+    },
+    "content": {
+      "type": "string",
+      "title": "Inneh\u00e5ll"
+    }
+  },
+  "required": [
+    "thread_id",
+    "content"
+  ]
+}
