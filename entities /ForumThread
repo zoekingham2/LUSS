@@ -1,0 +1,39 @@
+{
+  "name": "ForumThread",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Titel"
+    },
+    "content": {
+      "type": "string",
+      "title": "Inneh\u00e5ll"
+    },
+    "category": {
+      "type": "string",
+      "title": "Kategori",
+      "enum": [
+        "Generellt",
+        "Matchdiskussion",
+        "Transferrykten",
+        "\u00d6vrigt"
+      ]
+    },
+    "is_pinned": {
+      "type": "boolean",
+      "title": "Fastn\u00e5lad",
+      "default": false
+    },
+    "reply_count": {
+      "type": "number",
+      "title": "Antal svar",
+      "default": 0
+    }
+  },
+  "required": [
+    "title",
+    "content",
+    "category"
+  ]
+}
