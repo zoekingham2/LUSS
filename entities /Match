@@ -1,0 +1,58 @@
+{
+  "name": "Match",
+  "type": "object",
+  "properties": {
+    "home_team": {
+      "type": "string",
+      "title": "Hemmalag"
+    },
+    "away_team": {
+      "type": "string",
+      "title": "Bortalag"
+    },
+    "date": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Datum & tid"
+    },
+    "home_score": {
+      "type": "number",
+      "title": "Hemmapo\u00e4ng"
+    },
+    "away_score": {
+      "type": "number",
+      "title": "Bortapo\u00e4ng"
+    },
+    "competition": {
+      "type": "string",
+      "title": "T\u00e4vling",
+      "enum": [
+        "Championship",
+        "FA Cup",
+        "League Cup",
+        "Tr\u00e4ningsmatch"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": [
+        "Kommande",
+        "Spelad",
+        "P\u00e5g\u00e5r"
+      ],
+      "default": "Kommande"
+    },
+    "venue": {
+      "type": "string",
+      "title": "Arena"
+    }
+  },
+  "required": [
+    "home_team",
+    "away_team",
+    "date",
+    "competition",
+    "status"
+  ]
+}
