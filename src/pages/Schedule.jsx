@@ -9,8 +9,12 @@ export default function Schedule() {
 
   useEffect(() => {
     async function load() {
-      const data = await client.entities.Match.list("date", 100);
-      setMatches(data);
+      try {
+        const data = await client.entities.Match.list("date", 100);
+        setMatches(data);
+      } catch {
+        // matches stays empty
+      }
       setLoading(false);
     }
     load();

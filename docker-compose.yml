@@ -9,7 +9,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      - JWT_SECRET=${JWT_SECRET:-change-this-secret}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET environment variable must be set}
       - PORT=3001
       - DB_PATH=/app/data/luss.db
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost:5173}

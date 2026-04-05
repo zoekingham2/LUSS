@@ -64,13 +64,13 @@ router.put('/:id', requireAuth, (req, res) => {
   const existing = db.prepare('SELECT id FROM articles WHERE id = ?').get(req.params.id);
   if (!existing) return res.status(404).json({ error: 'Article not found' });
 
-  const { title, content, category, author, image_url, excerpt, is_featured, comment_count } = req.body;
+  const { title, content, category, author, image_url, excerpt, is_featured } = req.body;
   db.prepare(
     `UPDATE articles SET title=COALESCE(?,title), content=COALESCE(?,content), category=COALESCE(?,category),
      author=COALESCE(?,author), image_url=COALESCE(?,image_url), excerpt=COALESCE(?,excerpt),
-     is_featured=COALESCE(?,is_featured), comment_count=COALESCE(?,comment_count)
+     is_featured=COALESCE(?,is_featured)
      WHERE id=?`
-  ).run(title, content, category, author, image_url, excerpt, is_featured != null ? (is_featured ? 1 : 0) : null, comment_count, req.params.id);
+  ).run(title, content, category, author, image_url, excerpt, is_featured != null ? (is_featured ? 1 : 0) : null, req.params.id);
 
   const row = db.prepare('SELECT * FROM articles WHERE id = ?').get(req.params.id);
   res.json({ ...row, is_featured: row.is_featured === 1 });

@@ -37,25 +37,33 @@ export default function Forum() {
   }, []);
 
   async function loadThreads() {
-    const data = await client.entities.ForumThread.list("-created_date", 100);
-    setThreads(data);
+    try {
+      const data = await client.entities.ForumThread.list("-created_date", 100);
+      setThreads(data);
+    } catch {
+      // threads stays empty
+    }
     setLoading(false);
   }
 
   async function handleCreate() {
     if (!newTitle.trim() || !newContent.trim()) return;
     setCreating(true);
-    await client.entities.ForumThread.create({
-      title: newTitle.trim(),
-      content: newContent.trim(),
-      category: newCategory,
-    });
-    setNewTitle("");
-    setNewContent("");
-    setNewCategory("Generellt");
-    setDialogOpen(false);
+    try {
+      await client.entities.ForumThread.create({
+        title: newTitle.trim(),
+        content: newContent.trim(),
+        category: newCategory,
+      });
+      setNewTitle("");
+      setNewContent("");
+      setNewCategory("Generellt");
+      setDialogOpen(false);
+      loadThreads();
+    } catch {
+      // creation failed; dialog stays open so user can retry
+    }
     setCreating(false);
-    loadThreads();
   }
 
   const filtered =

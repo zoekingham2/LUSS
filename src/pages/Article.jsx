@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { client } from "@/api/client";
 import { ArrowLeft, Clock } from "lucide-react";
 import moment from "moment";
 import ReactMarkdown from "react-markdown";
@@ -9,17 +9,21 @@ import { motion } from "framer-motion";
 export default function Article() {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const { id: articleId } = useParams();
 
   useEffect(() => {
     async function load() {
-      if (!articleId) return;
+      if (!articleId) {
+        setLoading(false);
+        return;
+      }
       try {
         const found = await client.entities.Article.get(articleId);
         setArticle(found);
       } catch {
-        setArticle(null);
+        setError(true);
       }
       setLoading(false);
     }
@@ -37,7 +41,9 @@ export default function Article() {
   if (!article) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-        <h1 className="font-archivo text-2xl text-foreground">Artikeln hittades inte</h1>
+        <h1 className="font-archivo text-2xl text-foreground">
+          {error ? "Kunde inte ladda artikeln" : "Artikeln hittades inte"}
+        </h1>
         <Link to="/nyheter" className="mt-4 inline-flex items-center gap-2 text-leeds-navy font-inter text-sm font-semibold">
           <ArrowLeft size={16} /> Tillbaka till nyheter
         </Link>
