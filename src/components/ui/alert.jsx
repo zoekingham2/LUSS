@@ -43,3 +43,5 @@ const AlertDescription = React.forwardRef(({ className, ...props }, ref) => (
     {...props} />
 ))
 AlertDescription.displayName = "AlertDescription"
+
+export { Alert, AlertTitle, AlertDescription }
