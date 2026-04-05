@@ -60,6 +60,12 @@ app.get('*', (req, res) => {
   });
 });
 
+// ─── Global error handler ──────────────────────────────────────────────────
+app.use((err, req, res, _next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
 // ─── Start ─────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`LUSS server running on http://localhost:${PORT}`);
