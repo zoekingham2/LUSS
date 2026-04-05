@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 
 const authRoutes = require('./routes/auth');
 const articlesRoutes = require('./routes/articles');
@@ -11,6 +12,23 @@ const forumRoutes = require('./routes/forum');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// ─── Rate limiters ─────────────────────────────────────────────────────────
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+});
+
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+});
+
 // ─── Middleware ────────────────────────────────────────────────────────────
 app.use(express.json());
 app.use(cors({
@@ -19,10 +37,10 @@ app.use(cors({
 }));
 
 // ─── API Routes ────────────────────────────────────────────────────────────
-app.use('/api/auth', authRoutes);
-app.use('/api/articles', articlesRoutes);
-app.use('/api/matches', matchesRoutes);
-app.use('/api/forum', forumRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/articles', apiLimiter, articlesRoutes);
+app.use('/api/matches', apiLimiter, matchesRoutes);
+app.use('/api/forum', apiLimiter, forumRoutes);
 
 // ─── Serve built frontend (production) ────────────────────────────────────
 const distPath = path.join(__dirname, '..', 'dist');

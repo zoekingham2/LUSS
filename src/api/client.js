@@ -92,9 +92,8 @@ const auth = {
     return apiFetch('/auth/me');
   },
 
-  logout(redirectUrl) {
+  logout(_redirectUrl) {
     removeToken();
-    const dest = redirectUrl || '/login';
     window.location.href = '/login';
   },
 

@@ -5,12 +5,19 @@ const { requireAuth, optionalAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
-function parseSort(sort, defaultField = 'date', defaultOrder = 'ASC') {
-  if (!sort) return { field: defaultField, order: defaultOrder };
+const ALLOWED_SORT_FIELDS = {
+  date: 'date',
+  home_team: 'home_team',
+  away_team: 'away_team',
+  status: 'status',
+  competition: 'competition',
+};
+
+function parseSort(sortParam, defaultField = 'date', defaultOrder = 'ASC') {
+  const sort = Array.isArray(sortParam) ? sortParam[0] : (sortParam || '');
   const desc = sort.startsWith('-');
-  const field = desc ? sort.slice(1) : sort;
-  const allowed = ['date', 'home_team', 'away_team', 'status', 'competition'];
-  if (!allowed.includes(field)) return { field: defaultField, order: defaultOrder };
+  const fieldKey = desc ? sort.slice(1) : sort;
+  const field = ALLOWED_SORT_FIELDS[fieldKey] || defaultField;
   return { field, order: desc ? 'DESC' : 'ASC' };
 }
 
@@ -18,7 +25,8 @@ function parseSort(sort, defaultField = 'date', defaultOrder = 'ASC') {
 router.get('/', optionalAuth, (req, res) => {
   const { sort, limit } = req.query;
   const { field, order } = parseSort(sort);
-  const limitVal = limit ? Math.min(parseInt(limit, 10) || 200, 500) : 500;
+  const limitStr = Array.isArray(limit) ? limit[0] : limit;
+  const limitVal = limitStr ? Math.min(parseInt(limitStr, 10) || 200, 500) : 500;
   const rows = db
     .prepare(`SELECT * FROM matches ORDER BY ${field} ${order} LIMIT ?`)
     .all(limitVal);

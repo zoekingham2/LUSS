@@ -5,12 +5,18 @@ const { requireAuth, optionalAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
-function parseSort(sort, defaultField = 'created_date', defaultOrder = 'DESC') {
-  if (!sort) return { field: defaultField, order: defaultOrder };
+const THREAD_SORT_FIELDS = {
+  created_date: 'created_date',
+  title: 'title',
+  category: 'category',
+  reply_count: 'reply_count',
+};
+
+function parseSort(sortParam, defaultField = 'created_date', defaultOrder = 'DESC') {
+  const sort = Array.isArray(sortParam) ? sortParam[0] : (sortParam || '');
   const desc = sort.startsWith('-');
-  const field = desc ? sort.slice(1) : sort;
-  const allowed = ['created_date', 'title', 'category', 'reply_count'];
-  if (!allowed.includes(field)) return { field: defaultField, order: defaultOrder };
+  const fieldKey = desc ? sort.slice(1) : sort;
+  const field = THREAD_SORT_FIELDS[fieldKey] || defaultField;
   return { field, order: desc ? 'DESC' : 'ASC' };
 }
 
@@ -20,7 +26,8 @@ function parseSort(sort, defaultField = 'created_date', defaultOrder = 'DESC') {
 router.get('/threads', optionalAuth, (req, res) => {
   const { sort, limit } = req.query;
   const { field, order } = parseSort(sort);
-  const limitVal = limit ? Math.min(parseInt(limit, 10) || 100, 500) : 500;
+  const limitStr = Array.isArray(limit) ? limit[0] : limit;
+  const limitVal = limitStr ? Math.min(parseInt(limitStr, 10) || 100, 500) : 500;
   const rows = db
     .prepare(`SELECT * FROM forum_threads ORDER BY ${field} ${order} LIMIT ?`)
     .all(limitVal);
@@ -81,13 +88,15 @@ router.delete('/threads/:id', requireAuth, (req, res) => {
 router.get('/replies', optionalAuth, (req, res) => {
   const { thread_id, sort, limit } = req.query;
   const { field, order } = parseSort(sort);
-  const limitVal = limit ? Math.min(parseInt(limit, 10) || 200, 1000) : 1000;
+  const limitStr = Array.isArray(limit) ? limit[0] : limit;
+  const limitVal = limitStr ? Math.min(parseInt(limitStr, 10) || 200, 1000) : 1000;
+  const tidParam = Array.isArray(thread_id) ? thread_id[0] : thread_id;
 
   let rows;
-  if (thread_id) {
+  if (tidParam) {
     rows = db
       .prepare(`SELECT * FROM forum_replies WHERE thread_id = ? ORDER BY ${field} ${order} LIMIT ?`)
-      .all(thread_id, limitVal);
+      .all(tidParam, limitVal);
   } else {
     rows = db
       .prepare(`SELECT * FROM forum_replies ORDER BY ${field} ${order} LIMIT ?`)
