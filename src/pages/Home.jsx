@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { client } from "@/api/client";
 import { MessageSquare } from "lucide-react";
 import moment from "moment";
 import "moment/locale/sv";
@@ -48,8 +48,8 @@ export default function Home() {
   useEffect(() => {
     async function load() {
       const [arts, mtchs] = await Promise.all([
-        base44.entities.Article.list("-created_date", 10),
-        base44.entities.Match.list("date", 20),
+        client.entities.Article.list("-created_date", 10),
+        client.entities.Match.list("date", 20),
       ]);
       setArticles(arts);
       setMatches(mtchs);

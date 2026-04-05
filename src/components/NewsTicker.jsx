@@ -1,15 +1,8 @@
-import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { MessageSquare } from "lucide-react";
 
 export default function NewsTicker({ articles }) {
-  const [pos, setPos] = useState(0);
-
   const items = articles.slice(0, 6);
   if (items.length === 0) return null;
-
-  const text = items.map((a) => a.title).join("   •   ");
 
   return (
     <div className="bg-white border-b border-leeds-concrete overflow-hidden h-9 flex items-center">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { client } from "@/api/client";
 import NewsCard from "../components/NewsCard";
 
 const CATEGORIES = ["Alla", "Nyheter", "Matchrapport", "Analys"];
@@ -11,7 +11,7 @@ export default function News() {
 
   useEffect(() => {
     async function load() {
-      const data = await base44.entities.Article.list("-created_date", 50);
+      const data = await client.entities.Article.list("-created_date", 50);
       setArticles(data);
       setLoading(false);
     }

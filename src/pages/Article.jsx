@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { Link, useParams } from "react-router-dom";
+import { client } from "@/api/client";
 import { ArrowLeft, Clock } from "lucide-react";
 import moment from "moment";
 import ReactMarkdown from "react-markdown";
@@ -10,14 +10,17 @@ export default function Article() {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const articleId = window.location.pathname.split("/artikel/")[1];
+  const { id: articleId } = useParams();
 
   useEffect(() => {
     async function load() {
       if (!articleId) return;
-      const data = await base44.entities.Article.list();
-      const found = data.find((a) => a.id === articleId);
-      setArticle(found);
+      try {
+        const found = await client.entities.Article.get(articleId);
+        setArticle(found);
+      } catch {
+        setArticle(null);
+      }
       setLoading(false);
     }
     load();

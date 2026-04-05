@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { client } from "@/api/client";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +37,7 @@ export default function Forum() {
   }, []);
 
   async function loadThreads() {
-    const data = await base44.entities.ForumThread.list("-created_date", 100);
+    const data = await client.entities.ForumThread.list("-created_date", 100);
     setThreads(data);
     setLoading(false);
   }
@@ -45,7 +45,7 @@ export default function Forum() {
   async function handleCreate() {
     if (!newTitle.trim() || !newContent.trim()) return;
     setCreating(true);
-    await base44.entities.ForumThread.create({
+    await client.entities.ForumThread.create({
       title: newTitle.trim(),
       content: newContent.trim(),
       category: newCategory,

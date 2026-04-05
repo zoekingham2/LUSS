@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { Link, useParams } from "react-router-dom";
+import { client } from "@/api/client";
 import { ArrowLeft, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +14,7 @@ export default function ForumThread() {
   const [newReply, setNewReply] = useState("");
   const [sending, setSending] = useState(false);
 
-  const threadId = window.location.pathname.split("/forum/")[1];
+  const { id: threadId } = useParams();
 
   useEffect(() => {
     loadThread();
@@ -22,12 +22,11 @@ export default function ForumThread() {
 
   async function loadThread() {
     if (!threadId) return;
-    const [allThreads, allReplies] = await Promise.all([
-      base44.entities.ForumThread.list(),
-      base44.entities.ForumReply.filter({ thread_id: threadId }, "-created_date", 200),
+    const [thread, allReplies] = await Promise.all([
+      client.entities.ForumThread.get(threadId),
+      client.entities.ForumReply.filter({ thread_id: threadId }, "-created_date", 200),
     ]);
-    const found = allThreads.find((t) => t.id === threadId);
-    setThread(found);
+    setThread(thread);
     setReplies(allReplies);
     setLoading(false);
   }
@@ -35,13 +34,9 @@ export default function ForumThread() {
   async function handleReply() {
     if (!newReply.trim()) return;
     setSending(true);
-    await base44.entities.ForumReply.create({
+    await client.entities.ForumReply.create({
       thread_id: threadId,
       content: newReply.trim(),
-    });
-    // Update reply count
-    await base44.entities.ForumThread.update(threadId, {
-      reply_count: (thread?.reply_count || 0) + 1,
     });
     setNewReply("");
     setSending(false);

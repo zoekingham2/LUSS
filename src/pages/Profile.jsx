@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { client } from "@/api/client";
+import { useAuth } from "@/lib/AuthContext";
 import { User, Mail, Calendar, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import moment from "moment";
@@ -7,10 +8,11 @@ import moment from "moment";
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { logout } = useAuth();
 
   useEffect(() => {
     async function load() {
-      const me = await base44.auth.me();
+      const me = await client.auth.me();
       setUser(me);
       setLoading(false);
     }
@@ -109,7 +111,7 @@ export default function Profile() {
         <div className="mt-8 pt-6 border-t border-border">
           <Button
             variant="outline"
-            onClick={() => base44.auth.logout()}
+            onClick={() => logout()}
             className="font-inter text-xs font-bold tracking-wider uppercase gap-2 text-destructive border-destructive/30 hover:bg-destructive/5"
           >
             <LogOut size={14} />
