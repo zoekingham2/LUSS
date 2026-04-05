@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { client } from "@/api/client";
 import MatchCard from "../components/MatchCard";
 
 export default function Schedule() {
@@ -9,7 +9,7 @@ export default function Schedule() {
 
   useEffect(() => {
     async function load() {
-      const data = await base44.entities.Match.list("date", 100);
+      const data = await client.entities.Match.list("date", 100);
       setMatches(data);
       setLoading(false);
     }

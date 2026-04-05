@@ -15,9 +15,12 @@ export default function Article() {
   useEffect(() => {
     async function load() {
       if (!articleId) return;
-      const data = await base44.entities.Article.list();
-      const found = data.find((a) => a.id === articleId);
-      setArticle(found);
+      try {
+        const found = await client.entities.Article.get(articleId);
+        setArticle(found);
+      } catch {
+        setArticle(null);
+      }
       setLoading(false);
     }
     load();

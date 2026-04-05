@@ -1,37 +1,116 @@
-# LUSS
+# LUSS — Leeds United Supporters Sweden
 
+Fully self-hosted fan site for Swedish Leeds United supporters. No external services required — everything runs on your own hardware.
 
-**About**
+## Stack
 
-View and Edit  your app on [Base44.com](http://Base44.com) 
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React + Vite + Tailwind CSS |
+| Backend | Node.js + Express |
+| Database | SQLite (via `better-sqlite3`) |
+| Auth | JWT tokens + bcrypt |
 
-This project contains everything you need to run your app locally.
+---
 
-**Edit the code in your local development environment**
+## Quick start (development)
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+### 1. Clone & install
 
-**Prerequisites:** 
-
-1. Clone the repository using the project's Git URL 
-2. Navigate to the project directory
-3. Install dependencies: `npm install`
-4. Create an `.env.local` file and set the right environment variables
-
-```
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=your_backend_url
-
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
+```bash
+git clone <your-repo-url>
+cd LUSS
+npm install
+cd server && npm install && cd ..
 ```
 
-Run the app: `npm run dev`
-**Publish your changes**
+### 2. Configure environment
 
-Open [Base44.com](http://Base44.com) and click on Publish.
+```bash
+cp .env.example .env
+# Edit .env and set a strong JWT_SECRET
+```
 
-**Docs & Support**
+### 3. Start the backend server
 
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
+```bash
+node server/index.js
+# or with auto-reload:
+cd server && npm run dev
+```
+
+The API will be available at `http://localhost:3001`.
+
+### 4. Start the frontend dev server (separate terminal)
+
+```bash
+npm run dev
+```
+
+The app will be available at `http://localhost:5173`. API calls are automatically proxied to `localhost:3001`.
+
+---
+
+## Production deployment
+
+### Build & serve
+
+```bash
+# Build the frontend
+npm run build
+
+# Run the server (it also serves the built frontend from /dist)
+JWT_SECRET=your-secret node server/index.js
+```
+
+The server serves the built React app on port 3001 (static files + API on the same port).
+
+### Docker Compose
+
+```bash
+cp .env.example .env
+# Edit .env with your JWT_SECRET and FRONTEND_URL
+
+docker-compose up -d
+```
+
+---
+
+## Creating the first admin user
+
+1. Register normally via the `/login` page.
+2. Connect to the SQLite database and promote the user to admin:
+
+```bash
+# Using the sqlite3 CLI:
+sqlite3 server/data/luss.db "UPDATE users SET role='admin' WHERE email='your@email.com';"
+```
+
+Admin users can create/edit/delete articles and matches via the API.
+
+---
+
+## API reference
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/auth/register` | — | Register new user |
+| POST | `/api/auth/login` | — | Login, returns JWT |
+| GET | `/api/auth/me` | ✓ | Get current user |
+| GET | `/api/articles` | — | List articles |
+| GET | `/api/articles/:id` | — | Get article |
+| POST | `/api/articles` | admin | Create article |
+| PUT | `/api/articles/:id` | admin | Update article |
+| DELETE | `/api/articles/:id` | admin | Delete article |
+| GET | `/api/matches` | — | List matches |
+| POST | `/api/matches` | admin | Create match |
+| PUT | `/api/matches/:id` | admin | Update match |
+| DELETE | `/api/matches/:id` | admin | Delete match |
+| GET | `/api/forum/threads` | — | List forum threads |
+| POST | `/api/forum/threads` | ✓ | Create thread |
+| PUT | `/api/forum/threads/:id` | ✓ | Update thread |
+| GET | `/api/forum/replies?thread_id=X` | — | List replies |
+| POST | `/api/forum/replies` | ✓ | Post reply |
+
+Query parameters for list endpoints: `?sort=-created_date&limit=50`
+
