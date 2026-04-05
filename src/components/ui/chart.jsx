@@ -56,6 +56,16 @@ const ChartStyle = ({
     return null
   }
 
+  // Allow only safe CSS color values to prevent CSS injection
+  const sanitizeCssColor = (color) => {
+    if (typeof color !== 'string') return null;
+    const trimmed = color.trim();
+    if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(trimmed)) return trimmed;
+    if (/^(rgba?|hsla?)\(\s*[\d.%,/\s]+\)$/.test(trimmed)) return trimmed;
+    if (/^[a-zA-Z]{2,32}$/.test(trimmed)) return trimmed;
+    return null;
+  }
+
   return (
     (<style
       dangerouslySetInnerHTML={{
@@ -64,11 +74,13 @@ const ChartStyle = ({
 ${prefix} [data-chart=${id}] {
 ${colorConfig
 .map(([key, itemConfig]) => {
-const color =
+const rawColor =
   itemConfig.theme?.[theme] ||
   itemConfig.color
+const color = sanitizeCssColor(rawColor)
 return color ? `  --color-${key}: ${color};` : null
 })
+.filter(Boolean)
 .join("\n")}
 }
 `)

@@ -6,13 +6,32 @@ const toSnakeCase = (str) => {
 	return str.replace(/([A-Z])/g, '_$1').toLowerCase();
 }
 
+// Allow only printable ASCII characters (no control characters or null bytes)
+const MAX_PARAM_LENGTH = 2048;
+const SAFE_PARAM_RE = /^[\x20-\x7E]+$/;
+
+// Tokens are expected to be JWT-like or alphanumeric identifiers
+const TOKEN_RE = /^[A-Za-z0-9\-_=.]+$/;
+
+const sanitizeParam = (value, paramName) => {
+	if (typeof value !== 'string') return null;
+	if (value.length > MAX_PARAM_LENGTH) return null;
+	if (!SAFE_PARAM_RE.test(value)) return null;
+	// Stricter validation for auth tokens
+	if (paramName === 'access_token' || paramName === 'base44_access_token') {
+		if (!TOKEN_RE.test(value)) return null;
+	}
+	return value;
+}
+
 const getAppParamValue = (paramName, { defaultValue = undefined, removeFromUrl = false } = {}) => {
 	if (isNode) {
 		return defaultValue;
 	}
 	const storageKey = `base44_${toSnakeCase(paramName)}`;
 	const urlParams = new URLSearchParams(window.location.search);
-	const searchParam = urlParams.get(paramName);
+	const rawParam = urlParams.get(paramName);
+	const searchParam = rawParam ? sanitizeParam(rawParam, paramName) : null;
 	if (removeFromUrl) {
 		urlParams.delete(paramName);
 		const newUrl = `${window.location.pathname}${urlParams.toString() ? `?${urlParams.toString()}` : ""

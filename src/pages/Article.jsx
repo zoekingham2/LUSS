@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowLeft, Clock } from "lucide-react";
 import moment from "moment";
@@ -10,7 +10,7 @@ export default function Article() {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const articleId = window.location.pathname.split("/artikel/")[1];
+  const { id: articleId } = useParams();
 
   useEffect(() => {
     async function load() {
