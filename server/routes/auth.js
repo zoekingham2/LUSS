@@ -15,11 +15,24 @@ router.post('/register', (req, res) => {
   if (!email || !password || !full_name) {
     return res.status(400).json({ error: 'email, password and full_name are required' });
   }
+  // Basic email format validation (avoid complex regex to prevent ReDoS)
+  const atIndex = email.indexOf('@');
+  if (
+    atIndex <= 0 ||
+    atIndex !== email.lastIndexOf('@') ||
+    !email.slice(atIndex + 1).includes('.') ||
+    /\s/.test(email)
+  ) {
+    return res.status(400).json({ error: 'Invalid email address' });
+  }
+  if (password.length < 8) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters' });
+  }
   const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email.toLowerCase().trim());
   if (existing) {
     return res.status(409).json({ error: 'An account with that email already exists' });
   }
-  const hash = bcrypt.hashSync(password, 10);
+  const hash = bcrypt.hashSync(password, 12);
   const id = uuidv4();
   const created_date = new Date().toISOString();
   db.prepare(

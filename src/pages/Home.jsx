@@ -47,12 +47,16 @@ export default function Home() {
 
   useEffect(() => {
     async function load() {
-      const [arts, mtchs] = await Promise.all([
-        client.entities.Article.list("-created_date", 10),
-        client.entities.Match.list("date", 20),
-      ]);
-      setArticles(arts);
-      setMatches(mtchs);
+      try {
+        const [arts, mtchs] = await Promise.all([
+          client.entities.Article.list("-created_date", 10),
+          client.entities.Match.list("date", 20),
+        ]);
+        setArticles(arts);
+        setMatches(mtchs);
+      } catch {
+        // leave state as empty arrays; loading cleared below
+      }
       setLoading(false);
     }
     load();

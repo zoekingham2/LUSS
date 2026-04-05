@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { client } from "@/api/client";
 import { ArrowLeft, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,8 +11,10 @@ export default function ForumThread() {
   const [thread, setThread] = useState(null);
   const [replies, setReplies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [newReply, setNewReply] = useState("");
   const [sending, setSending] = useState(false);
+  const [replyError, setReplyError] = useState("");
 
   const { id: threadId } = useParams();
 
@@ -21,26 +23,38 @@ export default function ForumThread() {
   }, [threadId]);
 
   async function loadThread() {
-    if (!threadId) return;
-    const [thread, allReplies] = await Promise.all([
-      client.entities.ForumThread.get(threadId),
-      client.entities.ForumReply.filter({ thread_id: threadId }, "-created_date", 200),
-    ]);
-    setThread(thread);
-    setReplies(allReplies);
+    if (!threadId) {
+      setLoading(false);
+      return;
+    }
+    try {
+      const [t, allReplies] = await Promise.all([
+        client.entities.ForumThread.get(threadId),
+        client.entities.ForumReply.filter({ thread_id: threadId }, "-created_date", 200),
+      ]);
+      setThread(t);
+      setReplies(allReplies);
+    } catch {
+      setLoadError(true);
+    }
     setLoading(false);
   }
 
   async function handleReply() {
     if (!newReply.trim()) return;
     setSending(true);
-    await client.entities.ForumReply.create({
-      thread_id: threadId,
-      content: newReply.trim(),
-    });
-    setNewReply("");
+    setReplyError("");
+    try {
+      await client.entities.ForumReply.create({
+        thread_id: threadId,
+        content: newReply.trim(),
+      });
+      setNewReply("");
+      loadThread();
+    } catch (err) {
+      setReplyError(err.message || "Kunde inte skicka svaret. Försök igen.");
+    }
     setSending(false);
-    loadThread();
   }
 
   if (loading) {
@@ -54,7 +68,9 @@ export default function ForumThread() {
   if (!thread) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-        <h1 className="font-archivo text-2xl text-foreground">Tråden hittades inte</h1>
+        <h1 className="font-archivo text-2xl text-foreground">
+          {loadError ? "Kunde inte ladda tråden" : "Tråden hittades inte"}
+        </h1>
         <Link to="/forum" className="mt-4 inline-flex items-center gap-2 text-leeds-navy font-inter text-sm font-semibold">
           <ArrowLeft size={16} /> Tillbaka till forumet
         </Link>
@@ -147,6 +163,9 @@ export default function ForumThread() {
           <Send size={14} />
           {sending ? "Skickar..." : "SKICKA SVAR"}
         </Button>
+        {replyError && (
+          <p className="mt-2 text-sm font-inter text-red-600">{replyError}</p>
+        )}
       </div>
     </div>
   );

@@ -11,8 +11,12 @@ export default function News() {
 
   useEffect(() => {
     async function load() {
-      const data = await client.entities.Article.list("-created_date", 50);
-      setArticles(data);
+      try {
+        const data = await client.entities.Article.list("-created_date", 50);
+        setArticles(data);
+      } catch {
+        // articles stays empty; loading cleared below
+      }
       setLoading(false);
     }
     load();

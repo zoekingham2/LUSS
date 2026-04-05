@@ -46,24 +46,30 @@ db.exec(`
   );
 
   CREATE TABLE IF NOT EXISTS forum_threads (
-    id           TEXT PRIMARY KEY,
-    title        TEXT NOT NULL,
-    content      TEXT NOT NULL,
-    category     TEXT NOT NULL DEFAULT 'Generellt',
-    created_by   TEXT NOT NULL,
-    created_date TEXT NOT NULL,
-    is_pinned    INTEGER NOT NULL DEFAULT 0,
-    reply_count  INTEGER NOT NULL DEFAULT 0
+    id             TEXT PRIMARY KEY,
+    title          TEXT NOT NULL,
+    content        TEXT NOT NULL,
+    category       TEXT NOT NULL DEFAULT 'Generellt',
+    created_by     TEXT NOT NULL,
+    created_by_id  TEXT,
+    created_date   TEXT NOT NULL,
+    is_pinned      INTEGER NOT NULL DEFAULT 0,
+    reply_count    INTEGER NOT NULL DEFAULT 0
   );
 
   CREATE TABLE IF NOT EXISTS forum_replies (
-    id           TEXT PRIMARY KEY,
-    thread_id    TEXT NOT NULL REFERENCES forum_threads(id) ON DELETE CASCADE,
-    content      TEXT NOT NULL,
-    created_by   TEXT NOT NULL,
-    created_date TEXT NOT NULL
+    id             TEXT PRIMARY KEY,
+    thread_id      TEXT NOT NULL REFERENCES forum_threads(id) ON DELETE CASCADE,
+    content        TEXT NOT NULL,
+    created_by     TEXT NOT NULL,
+    created_by_id  TEXT,
+    created_date   TEXT NOT NULL
   );
 `);
+
+// Migrate: add created_by_id columns if they don't exist yet (for existing databases)
+try { db.exec('ALTER TABLE forum_threads ADD COLUMN created_by_id TEXT'); } catch { /* column already exists */ }
+try { db.exec('ALTER TABLE forum_replies ADD COLUMN created_by_id TEXT'); } catch { /* column already exists */ }
 
 // Seed initial data if tables are empty
 const articleCount = db.prepare('SELECT COUNT(*) as c FROM articles').get().c;
