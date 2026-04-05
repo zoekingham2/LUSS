@@ -55,6 +55,9 @@ router.post('/threads', requireAuth, (req, res) => {
     console.warn('Forum thread created with incomplete user data, id:', req.user.id);
     return 'Unknown';
   })();
+  const created_by_id = req.user.id;
+  db.prepare(
+    `INSERT INTO forum_threads (id, title, content, category, created_by, created_by_id, created_date, is_pinned, reply_count)
      VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0)`
   ).run(id, title.trim(), content.trim(), category || 'Generellt', created_by, created_by_id, created_date);
   const row = db.prepare('SELECT * FROM forum_threads WHERE id = ?').get(id);

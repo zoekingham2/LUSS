@@ -31,23 +31,15 @@ cp .env.example .env
 # Edit .env and set a strong JWT_SECRET
 ```
 
-### 3. Start the backend server
-
-```bash
-node server/index.js
-# or with auto-reload:
-cd server && npm run dev
-```
-
-The API will be available at `http://localhost:3001`.
-
-### 4. Start the frontend dev server (separate terminal)
+### 3. Start both servers
 
 ```bash
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`. API calls are automatically proxied to `localhost:3001`.
+This starts the backend API (port 3001) and the Vite dev server (port 5173) together.
+
+> To start them separately, use `npm run server` and `npm run dev:client` in two terminals.
 
 ---
 
