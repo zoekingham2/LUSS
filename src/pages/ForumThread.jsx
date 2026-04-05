@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ArrowLeft, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ export default function ForumThread() {
   const [newReply, setNewReply] = useState("");
   const [sending, setSending] = useState(false);
 
-  const threadId = window.location.pathname.split("/forum/")[1];
+  const { id: threadId } = useParams();
 
   useEffect(() => {
     loadThread();
