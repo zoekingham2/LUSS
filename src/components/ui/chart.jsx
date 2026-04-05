@@ -62,7 +62,6 @@ const ChartStyle = ({
     const trimmed = color.trim();
     if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(trimmed)) return trimmed;
     if (/^(rgba?|hsla?)\(\s*[\d.%,/\s]+\)$/.test(trimmed)) return trimmed;
-    if (/^[a-zA-Z]{2,32}$/.test(trimmed)) return trimmed;
     return null;
   }
 
