@@ -31,7 +31,7 @@ export default function Matchtraffar() {
                 LUSS anordnar regelbundet pubträffar i samband med TV-sända Leeds-matcher. Vi samlas på utvalda pubar runt om i Sverige för att titta på matcher tillsammans och fira eller sörja resultaten som en gemenskap.
               </p>
               <p>
-                Träffarna annonseras via vår Facebook-sida och på laget.se. Alla – membres och icke-medlemmar – är välkomna att delta!
+                Träffarna annonseras via vår Facebook-sida och på laget.se. Alla – medlemmar och icke-medlemmar – är välkomna att delta!
               </p>
             </div>
           </div>

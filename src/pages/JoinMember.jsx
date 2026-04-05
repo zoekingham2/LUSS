@@ -131,7 +131,7 @@ export default function JoinMember() {
             </div>
             <div className="p-4 bg-white space-y-3">
               <p className="font-serif text-sm text-foreground">
-                Logga in med ditt LUSS-konto för att se ditt profil, kommentera artiklar och delta i forumet.
+                Logga in med ditt LUSS-konto för att se din profil, kommentera artiklar och delta i forumet.
               </p>
               <Link
                 to="/profil"
