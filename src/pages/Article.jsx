@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { client } from "@/api/client";
+import { base44 } from "@/api/base44Client";
 import { ArrowLeft, Clock } from "lucide-react";
 import moment from "moment";
 import ReactMarkdown from "react-markdown";
