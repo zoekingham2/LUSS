@@ -15,6 +15,10 @@ import Profile from './pages/Profile';
 import About from './pages/About';
 import JoinMember from './pages/JoinMember';
 import Login from './pages/Login';
+import Contact from './pages/Contact';
+import Podcast from './pages/Podcast';
+import Matchtraffar from './pages/Matchtraffar';
+import Historia from './pages/Historia';
 
 // Redirect to /login if user is not authenticated
 function ProtectedRoute({ children }) {
@@ -48,6 +52,10 @@ const AuthenticatedApp = () => {
         <Route path="/profil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/om-oss" element={<About />} />
         <Route path="/bli-medlem" element={<JoinMember />} />
+        <Route path="/kontakt" element={<Contact />} />
+        <Route path="/podd" element={<Podcast />} />
+        <Route path="/matchtraffar" element={<Matchtraffar />} />
+        <Route path="/historia" element={<Historia />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
