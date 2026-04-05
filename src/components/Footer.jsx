@@ -28,8 +28,10 @@ export default function Footer() {
             </h4>
             <nav className="space-y-2">
               <Link to="/om-oss" className="block font-inter text-xs hover:text-white transition-colors">Om Leeds Sverige</Link>
+              <Link to="/historia" className="block font-inter text-xs hover:text-white transition-colors">Historia</Link>
               <Link to="/bli-medlem" className="block font-inter text-xs hover:text-white transition-colors">Bli Medlem</Link>
-              <Link to="/styrelsen" className="block font-inter text-xs hover:text-white transition-colors">Styrelsen</Link>
+              <Link to="/matchtraffar" className="block font-inter text-xs hover:text-white transition-colors">Matchträffar</Link>
+              <Link to="/podd" className="block font-inter text-xs hover:text-white transition-colors">LUSS-Podd</Link>
               <Link to="/kontakt" className="block font-inter text-xs hover:text-white transition-colors">Kontakta Oss</Link>
             </nav>
           </div>
@@ -54,6 +56,8 @@ export default function Footer() {
             <nav className="space-y-2">
               <a href="https://www.leedsunited.com" target="_blank" rel="noopener noreferrer" className="block font-inter text-xs hover:text-white transition-colors">leedsunited.com</a>
               <a href="https://www.laget.se/LUSS/" target="_blank" rel="noopener noreferrer" className="block font-inter text-xs hover:text-white transition-colors">laget.se/LUSS</a>
+              <a href="https://www.lusn.co.uk/leeds-united-supporters-sweden" target="_blank" rel="noopener noreferrer" className="block font-inter text-xs hover:text-white transition-colors">LUSN</a>
+              <a href="https://www.facebook.com/LeedsSweden" target="_blank" rel="noopener noreferrer" className="block font-inter text-xs hover:text-white transition-colors">Facebook</a>
             </nav>
           </div>
         </div>
