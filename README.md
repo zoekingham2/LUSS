@@ -1,6 +1,6 @@
-# LUSS — Leeds United Supporters Sweden
+# LUSS - Leeds United Supporters Sweden
 
-Fully self-hosted fan site for Swedish Leeds United supporters. No external services required — everything runs on your own hardware.
+Fully self-hosted fan site for Swedish Leeds United supporters. 
 
 ## Stack
 
